@@ -1,0 +1,6 @@
+.env
+.DS_Store
+cache/
+out/
+broadcast/
+deployments/
