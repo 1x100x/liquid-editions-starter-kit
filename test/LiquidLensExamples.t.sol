@@ -7,6 +7,7 @@ import {LiquidLensHTMLExample} from "../src/examples/LiquidLensHTMLExample.sol";
 import {LiquidLensMintable721SVGExample} from "../src/examples/LiquidLensMintable721SVGExample.sol";
 import {ILiquidBase} from "../src/interfaces/ILiquidBase.sol";
 import {MockLiquid} from "../src/mocks/MockLiquid.sol";
+import {Base64} from "../src/utils/Base64.sol";
 
 contract LiquidLensExamplesTest is Test {
     address internal creator = makeAddr("creator");
@@ -41,6 +42,15 @@ contract LiquidLensExamplesTest is Test {
     function test_LensHtmlReturnsJsonDataUri() external view {
         assertTrue(
             _startsWith(lensHtml.tokenURI(), "data:application/json;base64,")
+        );
+    }
+
+    function test_LensHtmlIncludesEncodedJsonNamePrefix() external view {
+        assertTrue(
+            _contains(
+                lensHtml.tokenURI(),
+                "eyJuYW1lIjoiTGlxdWlkIExlbnMgSFRNTCBFeGFtcGxl"
+            )
         );
     }
 
@@ -108,6 +118,13 @@ contract LiquidLensExamplesTest is Test {
         assertEq(liquid.tokenURI(), lensMintable721.tokenURI());
     }
 
+    function test_Base64Encode_LongPayloadMatchesReference() external pure {
+        assertEq(
+            Base64.encode(bytes("abcdefghijklmnopqrstuvwxyz0123456789")),
+            "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXowMTIzNDU2Nzg5"
+        );
+    }
+
     function _startsWith(
         string memory text,
         string memory prefix
@@ -126,5 +143,34 @@ contract LiquidLensExamplesTest is Test {
         }
 
         return true;
+    }
+
+    function _contains(
+        string memory text,
+        string memory needle
+    ) internal pure returns (bool) {
+        bytes memory textBytes = bytes(text);
+        bytes memory needleBytes = bytes(needle);
+
+        if (needleBytes.length > textBytes.length) {
+            return false;
+        }
+
+        for (uint256 i; i <= textBytes.length - needleBytes.length; ++i) {
+            bool matches = true;
+
+            for (uint256 j; j < needleBytes.length; ++j) {
+                if (textBytes[i + j] != needleBytes[j]) {
+                    matches = false;
+                    break;
+                }
+            }
+
+            if (matches) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -22,9 +22,7 @@ library Base64 {
             let endPtr := add(dataPtr, mload(data))
             let resultPtr := add(result, 32)
 
-            for {
-                dataPtr := add(dataPtr, 32)
-            } lt(dataPtr, endPtr) {} {
+            for {} lt(dataPtr, endPtr) {} {
                 dataPtr := add(dataPtr, 3)
                 let input := mload(dataPtr)
 
