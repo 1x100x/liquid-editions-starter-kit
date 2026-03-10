@@ -345,7 +345,7 @@ Nothing breaks if the work stops changing. That is still a valid authored choice
 
 Before you build a render contract in this repo, the easiest path is to create your Liquid Edition in the SuperRare dev UI:
 
-- `dev.superrare.com/create/liquid-edition`
+- [dev.superrare.com/create/liquid-edition](https://dev.superrare.com/create/liquid-edition)
 
 This starter kit is primarily for the render contract that you attach afterward. In practice, the easiest flow is:
 
@@ -356,9 +356,9 @@ This starter kit is primarily for the render contract that you attach afterward.
 
 Once your render contract is registered, you can immediately inspect how the Liquid Edition renders in the UI at:
 
-- `dev.superrare.com/liquid-editions/11155111/<liquidEditionContractAddress>`
+- `https://dev.superrare.com/liquid-editions/11155111/<liquidEditionContractAddress>`
 
-Replace `<liquidEditionContractAddress>` with your Sepolia Liquid Edition address.
+Replace `<liquidEditionContractAddress>` with your Sepolia Liquid Edition address. `11155111` is the Sepolia chain ID in the URL.
 
 ### 2. Copy env vars
 
@@ -439,7 +439,7 @@ For Sepolia, the recommended setup is:
 2. Set `LIQUID_EDITION_ADDRESS` in `.env` to that deployed Liquid Edition address.
 3. Deploy your render contract from this repo.
 4. Register the render contract on the Liquid Edition.
-5. Open `dev.superrare.com/liquid-editions/11155111/<liquidEditionContractAddress>` to verify the render in the UI.
+5. Open `https://dev.superrare.com/liquid-editions/11155111/<liquidEditionContractAddress>` to verify the render in the UI.
 
 If you prefer, you can still create Liquid Editions through lower-level contract workflows, but that is not the easiest starting path for most users of this starter kit.
 
@@ -571,5 +571,5 @@ For most users, the easiest way to get a Sepolia Liquid Edition is still:
 7. Update or add tests.
 8. Deploy the renderer to Sepolia first.
 9. Register the renderer on the target Liquid token.
-10. Verify the result in `dev.superrare.com/liquid-editions/11155111/<liquidEditionContractAddress>`.
+10. Verify the result in `https://dev.superrare.com/liquid-editions/11155111/<liquidEditionContractAddress>`.
 11. Move to mainnet after validating output.
