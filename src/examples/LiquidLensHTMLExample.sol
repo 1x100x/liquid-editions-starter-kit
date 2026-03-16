@@ -98,6 +98,7 @@ contract LiquidLensHTMLExample {
 
     function _snapshot() internal view returns (Snapshot memory s) {
         ILiquid liquid = ILiquid(LIQUID_EDITION);
+        ILiquidBase liquidBase = ILiquidBase(LIQUID_EDITION);
 
         s.tokenName = liquid.name();
         s.tokenSymbol = liquid.symbol();
@@ -106,7 +107,7 @@ contract LiquidLensHTMLExample {
         (s.rarePerToken, s.tokenPerRare, s.sqrtPriceX96, s.currentTick, s.liquidity, s.currentSupply) =
             liquid.getMarketState();
 
-        try liquid.getLaunchState() returns (ILiquidBase.LaunchType launchType, bool poolLive, address, address) {
+        try liquidBase.getLaunchState() returns (ILiquidBase.LaunchType launchType, bool poolLive, address, address) {
             s.launchType = launchType;
             s.poolLive = poolLive;
         } catch {

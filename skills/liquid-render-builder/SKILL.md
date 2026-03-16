@@ -45,6 +45,7 @@ Apply these rules consistently:
 - Return standard NFT metadata JSON from `tokenURI()`.
 - Keep the Liquid passthrough path centered on `tokenURI()`.
 - Remember that a Liquid Edition can register only one render contract address.
+- Treat the renderer as a read-only observer of current onchain state at `tokenURI()` time.
 - If the artist wants an ERC721 lens collection, the clearest pattern is a single contract that is both the registered renderer and the ERC721.
 - Standard buying and selling flows are supported; custom mechanics are allowed but are not automatically surfaced in the platform UI.
 
@@ -151,6 +152,7 @@ Avoid common mistakes:
 
 - Do not describe ETH-denominated pricing when the reserve currency is RARE.
 - Do not imply that multiple render contracts can be registered to one Liquid Edition.
+- Do not describe `tokenURI()` like a callback, cron job, or autonomous process that can mutate storage between reads.
 - Do not promise UI support for custom mechanics such as burn-to-mint, claim flows, or special admin actions.
 - Do not break the metadata JSON envelope while experimenting with visuals.
 
@@ -192,3 +194,5 @@ That can include:
 - transfer restrictions
 
 But those mechanics will need their own interface or script unless explicit product support exists. Keep that constraint visible when designing the contract.
+
+If the artist describes mechanics like daily moves, purchasable actions, or other stored permissions, translate that into explicit write functions and separate UI flow. Do not imply those rights can be created or consumed just by reading `tokenURI()`.

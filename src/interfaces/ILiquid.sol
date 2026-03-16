@@ -2,12 +2,14 @@
 pragma solidity ^0.8.24;
 
 import {IERC20Metadata} from "./IERC20Metadata.sol";
-import {ILiquidBase} from "./ILiquidBase.sol";
+import {IHooks} from "./IHooks.sol";
+import {Currency} from "../types/Currency.sol";
+import {PoolId} from "../types/PoolId.sol";
 
 /// @notice Artist-facing subset of the Liquid token interface.
 /// @dev This keeps the starter repo lightweight while preserving the read surface
 /// needed for render contracts and common registration flows.
-interface ILiquid is IERC20Metadata, ILiquidBase {
+interface ILiquid is IERC20Metadata {
     error NotTokenCreator();
 
     event RenderContractSet(address indexed renderContract);
@@ -27,6 +29,15 @@ interface ILiquid is IERC20Metadata, ILiquidBase {
     function factory() external view returns (address);
 
     function renderContract() external view returns (address);
+
+    function poolManager() external view returns (address);
+
+    function poolKey()
+        external
+        view
+        returns (Currency currency0, Currency currency1, uint24 fee, int24 tickSpacing, IHooks hooks);
+
+    function poolId() external view returns (PoolId);
 
     function maxTotalSupply() external view returns (uint256);
 

@@ -116,6 +116,7 @@ contract LiquidLensMintable721SVGExample is SimpleERC721 {
 
     function _snapshot() internal view returns (Snapshot memory s) {
         ILiquid liquid = ILiquid(LIQUID_EDITION);
+        ILiquidBase liquidBase = ILiquidBase(LIQUID_EDITION);
 
         s.tokenName = liquid.name();
         s.tokenSymbol = liquid.symbol();
@@ -130,7 +131,7 @@ contract LiquidLensMintable721SVGExample is SimpleERC721 {
             s.currentSupply
         ) = liquid.getMarketState();
 
-        try liquid.getLaunchState() returns (
+        try liquidBase.getLaunchState() returns (
             ILiquidBase.LaunchType launchType,
             bool poolLive,
             address,

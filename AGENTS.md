@@ -28,7 +28,10 @@ Treat those `SKILL.md` files as shared workflow guidance for this repo, not as p
 - A Liquid Edition can register only one render contract address.
 - If the registered render contract also implements ERC721 and returns `tokenURI(uint256)`, the collection can also be displayed.
 - In that setup, the same contract acts as both the Liquid renderer and the ERC721 lens collection.
+- The Liquid token only reaches the render contract through `tokenURI()`.
+- The render contract is a read-only observer of the current chain state at metadata fetch time.
 - Dynamic changes should usually be implemented as pure view logic over on-chain state.
+- `tokenURI()` is not a lifecycle hook and cannot persist mutations by itself.
 - Stateful changes still require explicit transactions.
 
 ## First Questions To Ask An Artist

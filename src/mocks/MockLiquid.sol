@@ -2,10 +2,13 @@
 pragma solidity ^0.8.24;
 
 import {ILiquid} from "../interfaces/ILiquid.sol";
+import {IHooks} from "../interfaces/IHooks.sol";
 import {ILiquidBase} from "../interfaces/ILiquidBase.sol";
 import {IRender} from "../interfaces/IRender.sol";
+import {Currency} from "../types/Currency.sol";
+import {PoolId} from "../types/PoolId.sol";
 
-contract MockLiquid is ILiquid {
+contract MockLiquid is ILiquid, ILiquidBase {
     string public name;
     string public symbol;
     uint8 public constant decimals = 18;
@@ -19,6 +22,7 @@ contract MockLiquid is ILiquid {
     address public override baseToken;
     address public override factory;
     address public override renderContract;
+    address public override poolManager;
     uint256 public override maxTotalSupply;
     uint256 public override poolLaunchSupply;
     uint256 public override creatorLaunchReward;
@@ -35,11 +39,20 @@ contract MockLiquid is ILiquid {
     bool public poolLive;
     address public auction;
     address public strategy;
+    Currency private _poolCurrency0;
+    Currency private _poolCurrency1;
+    uint24 private _poolFee;
+    int24 private _poolTickSpacing;
+    IHooks private _poolHooks;
+    PoolId private _poolId;
 
     constructor() {
         name = "Mock Liquid";
         symbol = "MLQD";
         tokenCreator = msg.sender;
+        baseToken = address(0xBEEF);
+        factory = address(0xFACADE);
+        poolManager = address(0xCAFE);
         maxTotalSupply = 1_000_000 ether;
         totalSupply = 900_000 ether;
         poolLaunchSupply = 900_000 ether;
@@ -55,6 +68,11 @@ contract MockLiquid is ILiquid {
         initialTokenUri = "ipfs://liquid-initial";
         storedTokenUri = initialTokenUri;
         balanceOf[msg.sender] = totalSupply;
+        _poolCurrency0 = Currency.wrap(baseToken);
+        _poolCurrency1 = Currency.wrap(address(this));
+        _poolFee = 3_000;
+        _poolTickSpacing = 60;
+        _poolId = PoolId.wrap(keccak256("mock-pool"));
     }
 
     function transfer(address to, uint256 value) external returns (bool) {
@@ -100,6 +118,14 @@ contract MockLiquid is ILiquid {
         if (msg.sender != tokenCreator) revert NotTokenCreator();
         renderContract = renderContract_;
         emit RenderContractSet(renderContract_);
+    }
+
+    function poolKey() external view returns (Currency currency0, Currency currency1, uint24 fee, int24 tickSpacing, IHooks hooks) {
+        return (_poolCurrency0, _poolCurrency1, _poolFee, _poolTickSpacing, _poolHooks);
+    }
+
+    function poolId() external view returns (PoolId) {
+        return _poolId;
     }
 
     function getCurrentPrice() external view returns (uint256, uint256) {

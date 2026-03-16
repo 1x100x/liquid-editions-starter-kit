@@ -6,7 +6,9 @@ import {Test} from "forge-std/Test.sol";
 import {LiquidLensHTMLExample} from "../src/examples/LiquidLensHTMLExample.sol";
 import {LiquidLensMintable721SVGExample} from "../src/examples/LiquidLensMintable721SVGExample.sol";
 import {ILiquidBase} from "../src/interfaces/ILiquidBase.sol";
+import {Currency} from "../src/types/Currency.sol";
 import {MockLiquid} from "../src/mocks/MockLiquid.sol";
+import {PoolId} from "../src/types/PoolId.sol";
 import {Base64} from "../src/utils/Base64.sol";
 
 contract LiquidLensExamplesTest is Test {
@@ -80,6 +82,18 @@ contract LiquidLensExamplesTest is Test {
         liquid.setRenderContract(address(lensHtml));
 
         assertEq(liquid.tokenURI(), lensHtml.tokenURI());
+    }
+
+    function test_LiquidExposesPoolSurface() external view {
+        assertEq(liquid.poolManager(), address(0xCAFE));
+
+        (Currency currency0, Currency currency1, uint24 fee, int24 tickSpacing,) = liquid.poolKey();
+
+        assertEq(Currency.unwrap(currency0), address(0xBEEF));
+        assertEq(Currency.unwrap(currency1), address(liquid));
+        assertEq(fee, 3_000);
+        assertEq(tickSpacing, 60);
+        assertEq(PoolId.unwrap(liquid.poolId()), keccak256("mock-pool"));
     }
 
     function test_Mintable721SvgSupportsPassthroughAndTokenMetadata() external {

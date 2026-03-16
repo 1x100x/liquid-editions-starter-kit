@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-/// @notice Minimal interface a Liquid render contract should implement.
+/// @notice Interface for render contracts that provide Liquid metadata.
 interface IRender {
     function tokenURI() external view returns (string memory);
 

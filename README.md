@@ -70,6 +70,17 @@ This starter kit demonstrates both:
 - `LiquidLensHTMLExample.sol` is the render-only pattern
 - `LiquidLensMintable721SVGExample.sol` is the combined renderer-plus-ERC721 pattern
 
+## Read-Time Mental Model
+
+A Liquid render contract is a read-only observer of the Liquid token state, not a live process running beside it.
+
+- the Liquid token reaches the renderer by exposing its `tokenURI()` output
+- during that read, the renderer can only inspect the current onchain state and current block context for that call
+- `tokenURI()` is a `view` metadata read, not a lifecycle hook
+- it cannot persist new state, receive automatic callbacks from market activity, or keep running between reads
+
+If a concept depends on mechanics like "one move per day," "buy extra moves," "claim influence," or any other stored rights, those mechanics must live in explicit transaction functions and usually need their own UI, site, or script. The metadata can display the results of those transactions, but it does not create them.
+
 ## Included Examples
 
 This starter keeps the example surface intentionally small:
@@ -244,6 +255,7 @@ Updates are pull-based.
 - our systems refresh metadata on every relevant Liquid Edition state change
 - metadata is also refreshed if the companion ERC721 emits `MetadataUpdated`
 - there is no push-based rendering path from Liquid into the render contract
+- the renderer only sees the current state for that fetch; it is not notified in-place when the market changes
 
 The easiest dynamic behavior is pure view logic:
 
@@ -261,6 +273,8 @@ If you want stateful behavior such as:
 - changing custom ERC721 state
 
 someone still has to submit a transaction. Nothing stateful happens automatically just because the market moved.
+
+Time-based behavior still follows the same rule. You can derive visuals from `block.timestamp` or `block.number` at read time, but that only gives you the current block context for the fetch. It does not mean the contract is autonomously evolving onchain between reads.
 
 ## Custom Mechanics and UI Support
 
